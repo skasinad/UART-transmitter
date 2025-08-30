@@ -1,10 +1,11 @@
 import cocotb 
 from cocotb.clock import Clock 
-from cocotb.triggers import Timer, RisingEdge
+from cocotb.triggers import Timer, RisingEdge, FallingEdge
 
-clock_period = 10 
+clock_period = 20 
 baud_rate = 115200
-bit_time = 1e9/baud_rate # I divided the bit rate by 1x10^9 due to how cocotb uses nanoseconds, hence 1x10^9ns = 1s
+bit_time = int(round(1e12 / baud_rate)) # about 8.7k picoseconds
+half_bittime = bit_time//2 
 
 @cocotb.test() 
 async def oneByte(dut): 
@@ -23,6 +24,9 @@ async def oneByte(dut):
     dut.tx_valid.value = 1
     await RisingEdge(dut.clk)
     dut.tx_valid.value = 0 
+    await FallingEdge(dut.txd)
+    await Timer(half_bittime, units="ps") # the mid-bit
+    
     
     # breaking the pattern into individual bits to get the bit sequence of the DUT
     data = 85 
@@ -32,9 +36,8 @@ async def oneByte(dut):
     bits.append(1)
     final_bits = bits # the final UART frame for 85
     
-    await Timer(bit_time / 2, units="ns")
     
     for i, bit in enumerate(final_bits):
         received_bit = int(dut.txd.value) # converting the binary value given by cocotb to get what the DUT is driving on the TX line
         assert received_bit == bit, f"Bit {i}: expected {bit} got {received_bit}" # checking that the sampled matches the position in the frame that we want
-        await Timer(bit_time, units="ns") 
+        await Timer(bit_time, units="ps") 
