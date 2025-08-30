@@ -2,7 +2,7 @@
 module tb_tx_smoke;
   reg clk = 0; // clock starting at 0 
   always #(10ns) clk = ~clk; // clock will invert every 10 ns
-  
+
   reg rst = 1;
   reg tx_valid = 0;
   reg [7:0] tx_data = 8'b00000000;
@@ -11,8 +11,8 @@ module tb_tx_smoke;
 
   // DUT
   uart_tx #(
-    .clk_hz(50_000_000),
-    .baud_rate(115_200)
+    .clk_hz(50000000),
+    .baud_rate(115200)
   ) dut (
     .clk(clk),
     .rst(rst),
