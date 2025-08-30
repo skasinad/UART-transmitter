@@ -1,8 +1,8 @@
 `timescale 1ns/1ps
 
 module uart_tx #(
-    parameter integer clk_hz = 50_000_000, 
-    parameter integer baud_rate = 115_200
+    parameter integer clk_hz = 50000000, 
+    parameter integer baud_rate = 115200
     //clk_hz for the frequency of the system's clock in hertz
     //baud_rate is the bit rate of the UART line 
 )(
