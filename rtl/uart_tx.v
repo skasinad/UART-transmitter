@@ -9,7 +9,7 @@ module uart_tx #(
     input wire [7:0] tx_data, 
 
     output reg tx_ready, 
-    output reg txd,
+    output reg txd
 );
 localparam integer clks_per_bit = clk_hz/baud_rate; //clks_per_bit is the number of clock cycles per UART bit, the relation between the clock frequency and the bitrate
 /* 4 states in the UART line
